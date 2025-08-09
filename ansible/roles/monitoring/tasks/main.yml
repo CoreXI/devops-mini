@@ -1,0 +1,25 @@
+- name: Prometheus compose
+  copy:
+    dest: /opt/monitoring/docker-compose.yml
+    content: |
+      services:
+        prometheus:
+          image: prom/prometheus:v2.54.1
+          volumes:
+            - /opt/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+          ports: ["9090:9090"]
+        node_exporter:
+          image: prom/node-exporter:v1.8.2
+          network_mode: host
+          pid: host
+          restart: unless-stopped
+- name: Prometheus config
+  template:
+    src: prometheus.yml.j2
+    dest: /opt/monitoring/prometheus.yml
+- name: Up
+  community.docker.docker_compose_v2:
+    project_src: /opt/monitoring
+    state: present
+  become: yes
+
