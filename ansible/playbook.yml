@@ -1,0 +1,7 @@
+- hosts: app
+  become: yes
+  vars:
+    docker_image: "{{ lookup('env','DOCKERHUB_USERNAME') }}/devops-mini:{{ lookup('env','GITHUB_SHA')[:7] | default('latest', true) }}"
+  roles: [app, monitoring]
+
+
